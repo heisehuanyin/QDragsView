@@ -101,7 +101,6 @@ class AcceptPanel(QWidget):
             self.setVisible(False)
 
 
-
 class DragManager(QObject):
     __unique_inst: 'DragManager' = None
 

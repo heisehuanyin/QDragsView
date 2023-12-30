@@ -87,10 +87,6 @@ class SplitPanel(QWidget):
         self.split_member[1].setVisible(True)
         pass
 
-    def paintEvent(self, a0):
-        super(SplitPanel, self).paintEvent(a0)
-        print(self.split_member[0].windowTitle() + "\\" + self.split_member[1].windowTitle())
-
     def child(self):
         return self.split_member[0], self.split_member[1], self.split_info[0]
 

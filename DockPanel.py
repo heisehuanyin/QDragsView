@@ -115,9 +115,6 @@ class DockPanel(QWidget):
     def sync_status(self):
         self.drag_header.setVisible(self.default_header)
 
-    def paintEvent(self, a0):
-        super(DockPanel, self).paintEvent(a0)
-        print(self.windowTitle() + "::" + str(self.isVisible()))
 
 if __name__ == "__main__":
     app=QApplication([])
