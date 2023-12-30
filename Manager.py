@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtWidgets import QWidget, QApplication, QMainWindow
 from PyQt5.QtCore import QObject, QEvent, QRect, QMargins, Qt, QMimeData
 from PyQt5.QtGui import QPainter, QColor, QDragEnterEvent, QDropEvent
 import re
@@ -18,6 +18,7 @@ class AcceptPanel(QWidget):
         self.setAcceptDrops(True)
 
         self.mgr_inst = mgr
+        self.target_anchor :QWidget = None
 
     def resizeEvent(self, a0):
         total_rect = self.rect()
@@ -32,6 +33,7 @@ class AcceptPanel(QWidget):
 
     def async_with(self, target_view: QWidget):
         self.resize(target_view.size())
+        self.target_anchor = target_view
 
     def paintEvent(self, a0):
         super(AcceptPanel, self).paintEvent(a0)
@@ -79,8 +81,26 @@ class AcceptPanel(QWidget):
         if result:
             view_id = result.group(1)
             adjust_view = self.mgr_inst.get_dockpanel(view_id)
+            target_view = self.target_anchor
+
+            # 移除源视图
+            parent_frame_rm = adjust_view.parent_res
+            self_siblings = parent_frame_rm.child()
+            if parent_frame_rm.parent_res is None:
+                main_window:QMainWindow = parent_frame_rm.parent()
+                views = [self_siblings[0], self_siblings[1]]
+                views.pop(views.index(adjust_view))
+                main_window.setCentralWidget(views[0])
+            else:
+                pparent_frame = parent_frame_rm.parent_res
+                if self_siblings[0] == adjust_view:
+                    pparent_frame.replace_view(self_siblings[1], parent_frame_rm)
+                else:
+                    pparent_frame.replace_view(self_siblings[0], parent_frame_rm)
+
             self.setVisible(False)
-            print(adjust_view)
+
+
 
 class DragManager(QObject):
     __unique_inst: 'DragManager' = None

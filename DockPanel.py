@@ -96,6 +96,10 @@ class DockPanel(QWidget):
     def reset_parent_res(self, pinst):
         self.parent_res = pinst
 
+    def setParent(self, a0):
+        self.drag_header.setParent(self)
+        super(DockPanel, self).setParent(a0)
+
     def __adjust_accept(self, view: QWidget, pt: QPoint):
         drag_trans = QDrag(self)
         mine_data = QMimeData()
@@ -111,6 +115,9 @@ class DockPanel(QWidget):
     def sync_status(self):
         self.drag_header.setVisible(self.default_header)
 
+    def paintEvent(self, a0):
+        super(DockPanel, self).paintEvent(a0)
+        print(self.windowTitle() + "::" + str(self.isVisible()))
 
 if __name__ == "__main__":
     app=QApplication([])

@@ -35,15 +35,19 @@ class DragSplitter(QFrame):
 
 
 class SplitPanel(QWidget):
-    def __init__(self, a: DockPanel, b: DockPanel, split: SplitType, parent:QWidget = None):
+    def __init__(self, a: DockPanel, b: DockPanel, split: SplitType, parent:'SplitPanel' = None):
         super(SplitPanel, self).__init__(parent)
 
         self.splitter_widget = DragSplitter(split, self)
         self.splitter_widget.adjustSignal[QPoint].connect(self.__splitter_adjust)
 
+        self.parent_res = parent
+
         self.split_member = (a, b)
         self.split_member[0].setParent(self)
+        self.split_member[0].parent_res = self
         self.split_member[1].setParent(self)
+        self.split_member[1].parent_res = self
 
         self.split_info = (split, 0.5, 7)
         self.sync_status()
@@ -78,7 +82,17 @@ class SplitPanel(QWidget):
 
             handle_rect = QRect(0, int(height_a), self.width(), int(self.split_info[2]))
             self.splitter_widget.setGeometry(handle_rect)
+
+        self.split_member[0].setVisible(True)
+        self.split_member[1].setVisible(True)
         pass
+
+    def paintEvent(self, a0):
+        super(SplitPanel, self).paintEvent(a0)
+        print(self.split_member[0].windowTitle() + "\\" + self.split_member[1].windowTitle())
+
+    def child(self):
+        return self.split_member[0], self.split_member[1], self.split_info[0]
 
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
@@ -100,11 +114,14 @@ class SplitPanel(QWidget):
     def replace_view(self, new: DockPanel, old: DockPanel):
         if old in self.__view_list() and new not in self.__view_list():
             if self.split_member[0] == old:
-                self.split_member = (new, self.split_member[1], self.split_member[2])
+                self.split_member = (new, self.split_member[1])
             else:
-                self.split_member = (self.split_member[0], new, self.split_member[2])
+                self.split_member = (self.split_member[0], new)
+            new.parent_res = self
+            new.setParent(self)
             old.setParent(None)
             self.sync_status()
+            self.update()
         pass
 
 
@@ -115,8 +132,10 @@ if __name__ == "__main__":
 
     a = DockPanel("docka", None, None)
     b = DockPanel("dockb", None, None)
+    c = DockPanel("dockc", None, None)
     win = SplitPanel(a, b, SplitType.SPLIT_H)
-    ow.setCentralWidget(win)
+    wino = SplitPanel(win, c, SplitType.SPLIT_V)
+    ow.setCentralWidget(wino)
 
     ow.show()
     app.exec()
