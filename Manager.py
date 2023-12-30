@@ -1,13 +1,13 @@
 from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtCore import QObject, QEvent, QRect, QMargins, Qt
-from PyQt5.QtGui import QPainter, QColor
-from enum import Enum
+from PyQt5.QtCore import QObject, QEvent, QRect, QMargins, Qt, QMimeData
+from PyQt5.QtGui import QPainter, QColor, QDragEnterEvent, QDropEvent
+import re
 
 
 class AcceptPanel(QWidget):
 
-    def __init__(self, parent):
-        super(AcceptPanel, self).__init__(parent)
+    def __init__(self, mgr):
+        super(AcceptPanel, self).__init__(None)
         self.left_rect = QRect()
         self.right_rect = QRect()
         self.top_rect = QRect()
@@ -16,6 +16,8 @@ class AcceptPanel(QWidget):
         self.hover_rect = QRect()
         self.setMouseTracking(True)
         self.setAcceptDrops(True)
+
+        self.mgr_inst = mgr
 
     def resizeEvent(self, a0):
         total_rect = self.rect()
@@ -35,7 +37,6 @@ class AcceptPanel(QWidget):
         super(AcceptPanel, self).paintEvent(a0)
         painter = QPainter(self)
         painter.fillRect(self.rect(), Qt.lightGray)
-
         painter.fillRect(self.hover_rect, Qt.gray)
 
         painter.fillRect(self.top_rect, Qt.green)
@@ -65,6 +66,21 @@ class AcceptPanel(QWidget):
 
         self.update()
 
+    def dragEnterEvent(self, a0: QDragEnterEvent):
+        if a0.mimeData().hasFormat("text/plain"):
+            content = a0.mimeData().text()
+            regex = re.compile("view-drags\\(([^\\(\\)]+)\\)")
+            if regex.match(content):
+                a0.acceptProposedAction()
+
+    def dropEvent(self, a0: QDropEvent):
+        regex = re.compile("view-drags\\(([^\\(\\)]+)\\)")
+        result = regex.match(a0.mimeData().text())
+        if result:
+            view_id = result.group(1)
+            adjust_view = self.mgr_inst.get_dockpanel(view_id)
+            self.setVisible(False)
+            print(adjust_view)
 
 class DragManager(QObject):
     __unique_inst: 'DragManager' = None
@@ -72,6 +88,8 @@ class DragManager(QObject):
     def __init__(self):
         super(DragManager, self).__init__()
         self.__dock_map = {}
+        self.__accept_panel = AcceptPanel(self)
+        self.__accept_panel.setVisible(False)
 
     @classmethod
     def instance(cls):
@@ -101,8 +119,12 @@ class DragManager(QObject):
                 gpos = sender.mapToGlobal(event.pos())
                 point = view_inst.mapFromGlobal(gpos)
                 if (view_inst.rect().contains(point)) and (self.__peak_window(view_inst).isActiveWindow()):
-                    print(view_inst.rect())
-
+                    self.__accept_panel.setParent(view_inst)
+                    self.__accept_panel.raise_()
+                    self.__accept_panel.async_with(view_inst)
+                    self.__accept_panel.setVisible(True)
+                    pass
+                pass
             pass
 
         return super(DragManager, self).eventFilter(sender, event)
