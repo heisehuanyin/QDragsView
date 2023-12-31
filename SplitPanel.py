@@ -1,4 +1,4 @@
-import Manager
+from Manager import DragManager
 from DockPanel import DockPanel
 from PyQt5.QtWidgets import QApplication, QWidget, QFrame
 from enum import Enum
@@ -113,9 +113,9 @@ class SplitPanel(QWidget):
                 self.split_member = (new, self.split_member[1])
             else:
                 self.split_member = (self.split_member[0], new)
+
             new.parent_res = self
             new.setParent(self)
-            old.setParent(None)
             self.sync_status()
             self.update()
         pass
@@ -124,7 +124,7 @@ class SplitPanel(QWidget):
 if __name__ == "__main__":
     app = QApplication([])
     ow = QMainWindow()
-    app.installEventFilter(Manager.DragManager.instance())
+    app.installEventFilter(DragManager.instance())
 
     a = DockPanel("docka", None, None)
     b = DockPanel("dockb", None, None)

@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55c45e43-6fd9-4244-902d-86f83a348f5b" name="Changes" comment="">
+    <list default="true" id="55c45e43-6fd9-4244-902d-86f83a348f5b" name="Changes" comment="删除冗余打印代码">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DockPanel.py" beforeDir="false" afterPath="$PROJECT_DIR$/DockPanel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/Manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SplitPanel.py" beforeDir="false" afterPath="$PROJECT_DIR$/SplitPanel.py" afterDir="false" />
     </list>
@@ -23,7 +22,27 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "heisehuanyin"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="e2cefb47-a99c-4e4b-bae0-586cfe078ae3" />
+        <option name="url" value="https://github.com/heisehuanyin/QDragsView.git" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="HierarchyBrowserManager">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="true" />
@@ -39,20 +58,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.DockPanel.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.Manager.executor&quot;: &quot;Run&quot;,
-    &quot;Python.SplitPanel.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Widget.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.DockPanel.executor": "Debug",
+    "Python.Manager.executor": "Run",
+    "Python.SplitPanel.executor": "Run",
+    "Python.Widget.executor": "Run",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "settings.editor.selected.configurable": "preferences.sourceCode"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Python.SplitPanel">
     <configuration name="DockPanel" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="SimpleIDE" />
@@ -167,6 +186,30 @@
       <option name="presentableId" value="Default" />
       <updated>1703843144486</updated>
     </task>
+    <task id="LOCAL-00001" summary="删除冗余打印代码">
+      <option name="closed" value="true" />
+      <created>1703944526835</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1703944526835</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="删除冗余打印代码" />
+    <option name="LAST_COMMIT_MESSAGE" value="删除冗余打印代码" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Manager.py</url>
+          <line>126</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
