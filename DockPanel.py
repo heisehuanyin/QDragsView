@@ -91,6 +91,7 @@ class DockPanel(QWidget):
         self.can_close = True
 
         DragManager.instance().register_dockpanel(self)
+        self.destroyed.connect(lambda :DragManager.instance().remove_dockpanel(self))
     pass
 
     def reset_parent_res(self, pinst):
@@ -109,8 +110,6 @@ class DockPanel(QWidget):
         drag_trans.setHotSpot(QPoint(5,5))
         drag_trans.exec()
 
-    def __del__(self):
-        DragManager.instance().remove_dockpanel(self)
 
     def sync_status(self):
         self.drag_header.setVisible(self.default_header)

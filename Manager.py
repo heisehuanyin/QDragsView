@@ -1,17 +1,17 @@
-from PyQt5.QtWidgets import QWidget, QApplication, QMainWindow
+from PyQt5.QtWidgets import QWidget, QApplication, QMainWindow, QMessageBox
 from PyQt5.QtCore import QObject, QEvent, QRect, QMargins, Qt, QMimeData
 from PyQt5.QtGui import QPainter, QColor, QDragEnterEvent, QDropEvent
 from enum import Enum
 import re
 
 
-class PLACE_AREA(Enum):
-    LEFT_AREA = 0,
-    RIGHT_AREA = 1,
-    TOP_AREA = 2,
-    BOTTOM_AREA = 3,
-    CENTER_AREA = 4,
-    UNDEFINE_AREA = 5,
+class PlaceArea(Enum):
+    LeftArea = 0,
+    RightArea = 1,
+    TopArea = 2,
+    BottomArea = 3,
+    CenterArea = 4,
+    UndefineArea = 5,
 
 
 class AcceptPanel(QWidget):
@@ -29,13 +29,13 @@ class AcceptPanel(QWidget):
 
         self.mgr_inst = mgr
         self.target_anchor :QWidget = None
-        self.target_area = PLACE_AREA.UNDEFINE_AREA
+        self.target_area = PlaceArea.UndefineArea
 
     def resizeEvent(self, a0):
         total_rect = self.rect()
         total_rect = total_rect - QMargins(5, 5, 5, 5)
         anchor_width = 30
-        self.target_area = PLACE_AREA.UNDEFINE_AREA
+        self.target_area = PlaceArea.UndefineArea
 
         self.left_rect = QRect(int(total_rect.left()), int(total_rect.center().y() - anchor_width / 2), int(anchor_width), int(anchor_width))
         self.right_rect = QRect(int(total_rect.right() - anchor_width), int(total_rect.center().y() - anchor_width / 2), int(anchor_width), int(anchor_width))
@@ -64,24 +64,24 @@ class AcceptPanel(QWidget):
 
         if self.left_rect.contains(a0.pos()):
             self.hover_rect.setWidth(int(self.hover_rect.width() / 3))
-            self.target_area = PLACE_AREA.LEFT_AREA
+            self.target_area = PlaceArea.LeftArea
         elif self.right_rect.contains(a0.pos()):
-            self.target_area = PLACE_AREA.RIGHT_AREA
+            self.target_area = PlaceArea.RightArea
             self.hover_rect.setWidth(int(self.hover_rect.width() / 3))
             self.hover_rect.moveLeft(int(self.rect().right() - self.hover_rect.width()))
         elif self.top_rect.contains(a0.pos()):
-            self.target_area = PLACE_AREA.TOP_AREA
+            self.target_area = PlaceArea.TopArea
             self.hover_rect.setHeight(int(self.hover_rect.height() / 3))
         elif self.center_rect.contains(a0.pos()):
-            self.target_area = PLACE_AREA.CENTER_AREA
+            self.target_area = PlaceArea.CenterArea
             pass
         elif self.bottom_rect.contains(a0.pos()):
-            self.target_area = PLACE_AREA.BOTTOM_AREA
+            self.target_area = PlaceArea.BottomArea
             self.hover_rect.setHeight(int(self.hover_rect.height() / 3))
             self.hover_rect.moveTop(int(self.rect().bottom() - self.hover_rect.height()))
         else:
             self.hover_rect = QRect()
-            self.target_area = PLACE_AREA.UNDEFINE_AREA
+            self.target_area = PlaceArea.UndefineArea
 
         self.update()
 
@@ -100,55 +100,80 @@ class AcceptPanel(QWidget):
             from DockPanel import DockPanel
             view_id = result.group(1)
             adjust_view: DockPanel = self.mgr_inst.get_dockpanel(view_id)
+            abandon_frame = adjust_view.parent_res
+            if abandon_frame is None:
+                QMessageBox.critical(self, "操作无效", "视图不能与自身进行替换和拼接操作！");
+                self.setVisible(False)
+                self.setParent(self.__peak_window(self.target_anchor))
+                return
+
+            remains_attach_frame = abandon_frame.parent_res
             target_view: DockPanel = self.target_anchor
 
-            if self.target_area == PLACE_AREA.CENTER_AREA and not target_view.can_replace:
+            if self.target_area == PlaceArea.CenterArea and not target_view.can_replace:
                 self.setVisible(False)
                 return
-            if self.target_area == PLACE_AREA.UNDEFINE_AREA:
+            if self.target_area == PlaceArea.UndefineArea:
                 self.setVisible(False)
                 return
 
             # 移除源视图
-            parent_frame_rm = adjust_view.parent_res
-            self_siblings = parent_frame_rm.child()
-            if parent_frame_rm.parent_res is None:
-                main_window:QMainWindow = parent_frame_rm.parent()
+            self_siblings = abandon_frame.child()
+            if remains_attach_frame is None:
+                main_window:QMainWindow = abandon_frame.parent()
                 views = [self_siblings[0], self_siblings[1]]
                 views.pop(views.index(adjust_view))
                 main_window.setCentralWidget(views[0])
+                views[0].setParent(main_window)
+                views[0].parent_res = None
             else:
-                pparent_frame = parent_frame_rm.parent_res
                 if self_siblings[0] == adjust_view:
-                    pparent_frame.replace_view(self_siblings[1], parent_frame_rm)
+                    remains_attach_frame.replace_view(self_siblings[1], abandon_frame)
                 else:
-                    pparent_frame.replace_view(self_siblings[0], parent_frame_rm)
+                    remains_attach_frame.replace_view(self_siblings[0], abandon_frame)
+
+            abandon_frame.setParent(None)
+            abandon_frame.parent_res = None
+            del abandon_frame
 
             place_frame = target_view.parent_res
-            split_group:DockPanel = None # 声明类型
-            if self.target_area == PLACE_AREA.LEFT_AREA:
+            split_group:QWidget = None # 声明类型
+            if self.target_area == PlaceArea.LeftArea:
                 split_group = SplitPanel(adjust_view, target_view, SplitType.SPLIT_H)
                 split_group.set_split_info(SplitType.SPLIT_H, 1/3)
-            elif self.target_area == PLACE_AREA.RIGHT_AREA:
+            elif self.target_area == PlaceArea.RightArea:
                 split_group = SplitPanel(target_view, adjust_view, SplitType.SPLIT_H)
                 split_group.set_split_info(SplitType.SPLIT_H, 2/3)
-            elif self.target_area == PLACE_AREA.TOP_AREA:
+            elif self.target_area == PlaceArea.TopArea:
                 split_group = SplitPanel(adjust_view, target_view, SplitType.SPLIT_V)
                 split_group.set_split_info(SplitType.SPLIT_V, 1/3)
-            elif self.target_area == PLACE_AREA.BOTTOM_AREA:
+            elif self.target_area == PlaceArea.BottomArea:
                 split_group = SplitPanel(target_view, adjust_view, SplitType.SPLIT_V)
                 split_group.set_split_info(SplitType.SPLIT_V, 2/3)
-            elif self.target_area == PLACE_AREA.CENTER_AREA:
+            elif self.target_area == PlaceArea.CenterArea:
                 split_group = adjust_view
 
             if place_frame is None:
                 main_window = target_view.parent()
-                target_view.setVisible(False)
                 main_window.setCentralWidget(split_group)
+                split_group.parent_res = None
+                target_view.setVisible(False)
+                self.mgr_inst.remove_dockpanel(target_view)
+                del target_view
             else:
                 place_frame.replace_view(split_group, target_view)
 
             self.setVisible(False)
+            self.setParent(self.__peak_window(self.target_anchor))
+
+    def __peak_window(self, obj: QWidget):
+        if obj is None:
+            return None
+
+        if obj.__class__.__name__ == "QMainWindow":
+            return obj
+
+        return self.__peak_window(obj.parent())
 
 
 class DragManager(QObject):

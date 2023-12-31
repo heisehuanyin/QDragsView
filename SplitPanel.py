@@ -114,8 +114,11 @@ class SplitPanel(QWidget):
             else:
                 self.split_member = (self.split_member[0], new)
 
-            new.parent_res = self
-            new.setParent(self)
+            self.split_member[0].setParent(self)
+            self.split_member[0].parent_res = self
+            self.split_member[1].setParent(self)
+            self.split_member[1].parent_res = self
+
             self.sync_status()
             self.update()
         pass
