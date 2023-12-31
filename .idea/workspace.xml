@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55c45e43-6fd9-4244-902d-86f83a348f5b" name="Changes" comment="删除冗余打印代码">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DockPanel.py" beforeDir="false" afterPath="$PROJECT_DIR$/DockPanel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/Manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SplitPanel.py" beforeDir="false" afterPath="$PROJECT_DIR$/SplitPanel.py" afterDir="false" />
-    </list>
+    <list default="true" id="55c45e43-6fd9-4244-902d-86f83a348f5b" name="Changes" comment="基本拼接功能的实现" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -201,11 +196,20 @@
       <option name="project" value="LOCAL" />
       <updated>1703944526835</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="基本拼接功能的实现">
+      <option name="closed" value="true" />
+      <created>1704015498724</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1704015498724</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="删除冗余打印代码" />
-    <option name="LAST_COMMIT_MESSAGE" value="删除冗余打印代码" />
+    <MESSAGE value="基本拼接功能的实现" />
+    <option name="LAST_COMMIT_MESSAGE" value="基本拼接功能的实现" />
   </component>
 </project>
